@@ -5,6 +5,7 @@
 //
 // hero sprite
 //
+var Hero = {};
 function Hero(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'hero');
     this.anchor.set(0.5, 0.5);
@@ -192,7 +193,7 @@ PlayState._spawnCharacters = function (data) {
         this.spiders.add(sprite);
     }, this);
 
-    // spawn hero
+    
     this.hero = new Hero(this.game, data.hero.x, data.hero.y);
     this.game.add.existing(this.hero);
 };
