@@ -2,15 +2,17 @@ const express = require("express");
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-// const bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
+
+// Allow passing plain JSON objects
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}))
 
 const port = 8081;
 
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
-app.use('/audio', express.static(__dirname + '/audio'));
-app.use('/data', express.static(__dirname + '/data'));
-app.use('/images', express.static(__dirname + '/images'));
+app.use('/assets', express.static(__dirname + '/assets'));
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + "/index.html");
@@ -19,10 +21,12 @@ app.get('/', (req, res) => {
 server.listen(port, () => {
 	console.log('Listening on ' + server.address().port);
 })
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: false}))
 
-// var squares = {};
+
+
+
+
+
 
 // function updateSquare(square){
 // 	squares[square.id] = square.pos;
@@ -36,3 +40,36 @@ server.listen(port, () => {
 //      io.emit('message', req.body);
 //      res.sendStatus(200);
 // })
+
+// var squares = {};
+
+server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
+
+io.on('connection', (socket) => {
+    socket.on('newplayer', (square) => {
+        socket.player = {
+            id: server.lastPlayderID++,
+            square: square
+        };
+        socket.emit('allplayers', getAllPlayers());
+		socket.broadcast.emit('newplayer', socket.player);
+		
+		socket.on('clientMovement', (square) => {
+			socket.player.square = square;
+            io.emit('movement', getAllPlayers());
+        });
+
+		socket.on('disconnect',function(){
+            io.emit('remove',socket.player.id);
+        });
+    });
+});
+
+function getAllPlayers(){
+    var players = [];
+    Object.keys(io.sockets.connected).forEach(function(socketID){
+        var player = io.sockets.connected[socketID].player;
+        if(player) players.push(player);
+    });
+    return players;
+}

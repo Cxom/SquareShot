@@ -74,6 +74,11 @@ Spider.prototype.update = function () {
 PlayState = {};
 
 PlayState.init = function () {
+
+    //prevent game not responding to messages when window is out of focus
+    //don't know if this is right
+    game.stage.disableVisibilityChange = true;
+
     this.game.renderer.renderSession.roundPixels = true;
 
     this.keys = this.game.input.keyboard.addKeys({
@@ -108,6 +113,8 @@ PlayState.create = function () {
 
     this.game.add.image(0, 0, 'background');
     this._loadLevel(this.game.cache.getJSON('level:1'));
+
+    Client.askNewPlayer();
 };
 
 PlayState.update = function () {

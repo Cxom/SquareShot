@@ -1,17 +1,29 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>HTML5 games workshop: One-screen platformer</title>
-    <meta charset="utf-8">
-
-    <script type="text/javascript" src="js/phaser.min.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="css/style.css" rel="stylesheet">
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script type="text/javascript" src="js/phaser.min.js"></script> -->
+    
+    <title>Multiplayer Squares</title>
+</head>
+<body>
 
     <style>
-        canvas {
-            margin: 0 auto;
-        }
+            canvas {
+                margin: 0 auto;
+            }
     </style>
-</head>
-<body></body>
+
+    <canvas id="canvas" width="800px" height="600px" style="border: 1px solid #000000; "></canvas>    
+
     <div id="game"></div>
+
+    <!-- <script type="text/javascript" src="js/main.js"></script> -->
+    <script type="text/javascript" src="js/client.js"></script>
 </body>
+</html>
