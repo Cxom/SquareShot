@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}))
 
-const port = 8081;
+const PORT = process.env.PORT || 5000;
 
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 	res.sendFile(__dirname + "/index.html");
 })
 
-server.listen(port, () => {
+server.listen(PORT, () => {
 	console.log('Listening on ' + server.address().port);
 })
 
