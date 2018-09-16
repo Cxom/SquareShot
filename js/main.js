@@ -88,7 +88,7 @@ PlayState.init = function () {
 };
 
 PlayState.preload = function () {
-    this.game.load.json('level:1', 'data/level01.json');
+    this.game.load.json('level:3', 'data/level03.json');
 
     this.game.load.image('background', 'images/background.png');
     this.game.load.image('ground', 'images/ground.png');
@@ -98,7 +98,7 @@ PlayState.preload = function () {
     this.game.load.image('grass:2x1', 'images/grass_2x1.png');
     this.game.load.image('grass:1x1', 'images/grass_1x1.png');
     this.game.load.image('hero', 'images/hero_stopped.png');
-    this.game.load.image('invisible-wall', 'images/invisible_wall.png');
+    this.game.load.spritesheet('invisible-wall', 'images/invisible_wall.png', 42, 10);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
 
 };
@@ -106,7 +106,7 @@ PlayState.preload = function () {
 PlayState.create = function () {
 
     this.game.add.image(0, 0, 'background');
-    this._loadLevel(this.game.cache.getJSON('level:1'));
+    this._loadLevel(this.game.cache.getJSON('level:3'));
 };
 
 PlayState.update = function () {
@@ -118,10 +118,16 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.spiders, this.platforms);
     this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
     this.game.physics.arcade.collide(this.hero, this.platforms);
-
+    this.game.physics.arcade.collide(this.spiders, this.spiders);
 
     this.game.physics.arcade.overlap(this.hero, this.spiders,
         this._onHeroVsEnemy, null, this);
+
+    this.game.physics.arcade.overlap(this.enemyWalls, this.platforms,
+        this._onEnemyWallVsPlatform, null, this);
+
+    this.game.physics.arcade.overlap(this.enemyWalls, this.enemyWalls,
+        this._onEnemyWallOverlap, null, this);
 };
 
 PlayState._handleInput = function () {
@@ -197,15 +203,25 @@ PlayState._spawnCharacters = function (data) {
     this.game.add.existing(this.hero);
 };
 
+PlayState._onEnemyWallVsPlatform = function ( ewall, platform) {
+    ewall.kill();
+}
 
-
+PlayState._onEnemyWallOverlap = function ( ewall1, ewall2 ) {
+    
+    ewall1.kill();
+    ewall2.kill();
+}
 
 // =============================================================================
 // entry point
 // =============================================================================
 
 window.onload = function () {
-    let game = new Phaser.Game(960, 600, Phaser.AUTO, 'game');
+    //let game = new Phaser.Game(960, 600, Phaser.AUTO, 'game');
+    const width = 22;
+    const height = 15;
+    let game = new Phaser.Game(42 * width, 42 * height, Phaser.AUTO, 'game');
     game.state.add('play', PlayState);
     game.state.start('play');
 };
